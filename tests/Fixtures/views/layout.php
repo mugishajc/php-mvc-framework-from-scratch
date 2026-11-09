@@ -1,0 +1,1 @@
+<main title="<?= $title ?? '' ?>"><?= $content ?></main>
