@@ -188,7 +188,9 @@ final class QueryBuilder
         }
 
         $columns = array_keys($values);
-        array_walk($columns, static fn (string $c) => self::assertIdentifier($c));
+        foreach ($columns as $column) {
+            self::assertIdentifier((string) $column);
+        }
 
         $sql = sprintf(
             'INSERT INTO %s (%s) VALUES (%s)',
@@ -240,7 +242,7 @@ final class QueryBuilder
             $sql .= ' LIMIT ' . $this->limit;
         }
         if ($this->offset !== null) {
-            // SQLite and MySQL both need a LIMIT before OFFSET.
+            // SQLite needs a LIMIT before OFFSET; -1 means "no limit".
             $sql .= ($this->limit === null ? ' LIMIT -1' : '') . ' OFFSET ' . $this->offset;
         }
 
