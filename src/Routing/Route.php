@@ -9,6 +9,10 @@ use Framework\Http\Request;
 
 final class Route
 {
+    /** A constraint may contain one level of braces, e.g. {year:\d{4}}. */
+    public const CONSTRAINT = '(?:[^{}]|\{[^{}]*\})+';
+    public const PLACEHOLDER = '\{\w+(?::' . self::CONSTRAINT . ')?\}';
+
     private string $regex;
 
     /** @var list<string|object> */
@@ -34,11 +38,11 @@ final class Route
      */
     public static function compile(string $path): string
     {
-        $parts = preg_split('#(\{\w+(?::[^}]+)?\})#', $path, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $parts = preg_split('#(' . self::PLACEHOLDER . ')#', $path, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
         $regex = '';
 
         foreach ($parts ?: [] as $part) {
-            if (preg_match('#^\{(\w+)(?::([^}]+))?\}$#', $part, $m) === 1) {
+            if (preg_match('#^\{(\w+)(?::(' . self::CONSTRAINT . '))?\}$#', $part, $m) === 1) {
                 $regex .= '(?P<' . $m[1] . '>' . ($m[2] ?? '[^/]+') . ')';
             } else {
                 $regex .= preg_quote($part, '#');

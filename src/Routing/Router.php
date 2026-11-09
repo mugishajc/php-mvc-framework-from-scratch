@@ -124,7 +124,7 @@ final class Router
                 continue;
             }
 
-            $url = preg_replace_callback('#\{(\w+)(?::[^}]+)?\}#', function (array $m) use ($params, $name): string {
+            $url = preg_replace_callback('#\{(\w+)(?::' . Route::CONSTRAINT . ')?\}#', function (array $m) use ($params, $name): string {
                 if (!array_key_exists($m[1], $params)) {
                     throw new InvalidArgumentException("Missing parameter [{$m[1]}] for route [$name].");
                 }
