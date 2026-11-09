@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Framework\Database\Connection;
+use Framework\Database\Migrator;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$config = require dirname(__DIR__) . '/config/app.php';
+$migrator = new Migrator(new Connection($config['db_dsn']), dirname(__DIR__) . '/database/migrations');
+
+$command = $argv[1] ?? 'up';
+
+switch ($command) {
+    case 'up':
+        $ran = $migrator->migrate();
+        echo $ran === [] ? "Nothing to migrate.\n" : implode('', array_map(fn ($n) => "Migrated: $n\n", $ran));
+        break;
+
+    case 'down':
+        $reverted = $migrator->rollback();
+        echo $reverted === [] ? "Nothing to roll back.\n" : implode('', array_map(fn ($n) => "Rolled back: $n\n", $reverted));
+        break;
+
+    case 'status':
+        foreach ($migrator->status() as $name => $ran) {
+            printf("[%s] %s\n", $ran ? 'x' : ' ', $name);
+        }
+        break;
+
+    default:
+        fwrite(STDERR, "Usage: php bin/migrate [up|down|status]\n");
+        exit(1);
+}
