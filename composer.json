@@ -1,0 +1,38 @@
+{
+    "name": "mugishajc/php-mvc-framework-from-scratch",
+    "description": "A small MVC framework written in plain PHP 8.2, with a task board demo app.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mugisha Jean Claude"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "src/",
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "migrate": "php bin/migrate",
+        "serve": "php -S localhost:8000 -t public"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
